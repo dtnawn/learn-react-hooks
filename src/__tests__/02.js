@@ -1,7 +1,7 @@
 import React from 'react'
 import {render, screen, fireEvent} from '@testing-library/react'
 import App from '../final/02'
-// import App from '../exercise/02'
+//import App from '../exercise/02'
 
 afterEach(() => {
   window.localStorage.removeItem('name')

@@ -5,38 +5,45 @@ import React from 'react'
 import fetchPokemon from '../fetch-pokemon'
 
 function PokemonInfo({pokemonName}) {
-  // 🐨 Have state for the pokemon (null), the error state (null), and the
-  // loading state (false).
+  const [pokemon, setPokemon] = React.useState();
+  const [error, setError] = React.useState();
+  const [loading, setLoading] = React.useState();
 
-  // 🐨 use React.useEffect where the callback should be called whenever the
-  // pokemon name changes.
-  // 💰 DON'T FORGET THE DEPENDENCIES ARRAY!
-  // 💰 if the pokemonName is falsy (an empty string) then don't bother making the request (exit early).
-  // 🐨 before calling `fetchPokemon`, make sure to update the loading state
-  // 💰 Use the `fetchPokemon` function to fetch a pokemon by its name:
-  //   fetchPokemon('Pikachu').then(
-  //     pokemon => { /* update all the state here */},
-  //     error => {/* update all the state here */},
-  //   )
+  React.useEffect(() => {
+    if (!pokemonName) {
+      return;
+    }
+
+    setLoading(true);
+    fetchPokemon(pokemonName).then(
+      pokemon => { 
+        setPokemon(pokemon);
+        setError(undefined);
+        setLoading(false);
+      },
+      error => {
+        setPokemon(undefined);
+        setError(error);
+        setLoading(false);
+      },
+    );
+  }, [pokemonName]);
 
   return (
     <div
       style={{
         height: 300,
         width: 300,
-        overflow: 'scroll',
+        overflow: 'auto',
         backgroundColor: '#eee',
         borderRadius: 4,
         padding: 10,
       }}
     >
-      {/*
-        🐨 Render the appropriate content based on the state:
-            1. loading: '...'
-            2. error: 'ERROR!'
-            3. pokemon: the JSON.stringified pokemon in a <pre></pre>
-      */}
-      TODO
+      {!loading && !error && !pokemon && <div>Submit a pokemon</div>}
+      {loading && <div>...</div>}
+      {!loading && error && <div>ERROR!</div>}
+      {!loading && pokemon && <pre>{JSON.stringify(pokemon, null, 2)}</pre>}
     </div>
   )
 }

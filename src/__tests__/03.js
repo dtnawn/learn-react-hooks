@@ -1,7 +1,7 @@
 import React from 'react'
 import {render, screen, fireEvent} from '@testing-library/react'
 import App from '../final/03'
-// import App from '../exercise/03'
+//import App from '../exercise/03'
 
 test('App works', () => {
   render(<App />)

@@ -3,14 +3,23 @@
 
 import React from 'react'
 
-function Greeting({initialName = ''}) {
-  // 🐨 initialize the state to the value from localStorage
-  // 💰 window.localStorage.getItem('name') || initialName
-  const [name, setName] = React.useState(initialName)
+function useLocalStorageState(key) {  
+  return {
+    getItem: () => {
+      const obj = window.localStorage.getItem(key);
+      return obj ? JSON.parse(obj)?.item : undefined
+    },
+    setItem: (value) => window.localStorage.setItem(key, JSON.stringify({ item: value }))
+  }
+}
 
-  // 🐨 Here's where you'll use `React.useEffect`.
-  // The callback should set the `count` in localStorage.
-  // 💰 window.localStorage.setItem('name', name)
+function Greeting({initialName = ''}) {
+  const lsName = useLocalStorageState('name');
+  const [name, setName] = React.useState(() => lsName.getItem() || initialName)
+
+  React.useEffect(() => {
+    lsName.setItem(name)
+  }, [lsName, name]);
 
   function handleChange(event) {
     setName(event.target.value)
@@ -19,7 +28,7 @@ function Greeting({initialName = ''}) {
     <div>
       <form>
         <label htmlFor="name">Name: </label>
-        <input onChange={handleChange} id="name" />
+        <input value={name || ''} onChange={handleChange} id="name" />
       </form>
       {name ? <strong>Hello {name}</strong> : 'Please type your name'}
     </div>
